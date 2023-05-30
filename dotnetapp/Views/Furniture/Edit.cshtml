@@ -1,0 +1,46 @@
+@model dotnetapp.Models.Furniture
+
+<h2>Edit Furniture</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Product)
+        @Html.TextBoxFor(model => model.Product, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Product, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Description)
+        @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Material)
+        @Html.TextBoxFor(model => model.Material, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Material, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Dimensions)
+        @Html.TextBoxFor(model => model.Dimensions, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Dimensions, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Price)
+        @Html.TextBoxFor(model => model.Price, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+    </div>
+<br>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+}
+<br>
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

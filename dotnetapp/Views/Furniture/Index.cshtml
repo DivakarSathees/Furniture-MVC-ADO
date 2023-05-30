@@ -1,0 +1,41 @@
+@model List<dotnetapp.Models.Furniture>
+
+<h2>Furniture List</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Product</th>
+            <th>Description</th>
+            <th>Material</th>
+            <th>Dimensions</th>
+            <th>Price</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Furniture in Model)
+        {
+            <tr>
+                <td>@Furniture.id</td>
+                <td>@Furniture.Product</td>
+                <td>@Furniture.Description</td>
+                <td>@Furniture.Material</td>
+                <td>@Furniture.Dimensions</td>
+                <td>@Furniture.Price</td>
+                
+                <td>
+                    <!-- <a asp-action="Details" asp-route-id="@Furniture.id">Details</a> | -->
+                    <a asp-action="Edit" asp-route-id="@Furniture.id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@Furniture.id">Delete</a>
+                </td>
+                
+                
+
+            </tr>
+        }
+    </tbody>
+</table>
+<br>
+<a href="@Url.Action("Create")" class="btn btn-primary">Add New Furniture</a>

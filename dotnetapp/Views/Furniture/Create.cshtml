@@ -1,0 +1,33 @@
+@model Furniture
+
+<h2>Add New Furniture</h2>
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        @Html.LabelFor(model => model.Product)
+        @Html.TextBoxFor(model => model.Product, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Description)
+        @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Material)
+        @Html.TextBoxFor(model => model.Material, new { @class = "form-control" })
+    </div> <!-- add a closing tag for the div element -->
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Dimensions)
+        @Html.TextBoxFor(model => model.Dimensions, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Price)
+        @Html.TextBoxFor(model => model.Price, new { @class = "form-control" })
+    </div><br>
+    <input type="submit" value="Create" class="btn btn-primary" />
+}
+<br>
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
