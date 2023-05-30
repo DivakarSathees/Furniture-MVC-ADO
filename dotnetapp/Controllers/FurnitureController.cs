@@ -11,15 +11,22 @@ using Microsoft.Data.SqlClient;
 
 public class FurnitureController : Controller
 {
-    
+    // private readonly IRepository<Furniture> _repository;
+
+    // public FurnitureController(IRepository<Furniture> repository)
+    // {
+    //     _repository = repository;
+    // }
 
     private string connectionString = "User ID=sa;password=examlyMssql@123;server=dffafdafebcfacbdcbaeadbebabcdebdca-0;Database=FurnitureDB;trusted_connection=false;Persist Security Info=False;Encrypt=False";
 
     public ActionResult Index()
     {
-        List<Furniture> furnitures = new List<Furniture>();
+        // List<Furniture> furnitures = new List<Furniture>();
     try
     {
+        List<Furniture> furnitures = new List<Furniture>();
+
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
             string query = "SELECT * FROM Furniture";
@@ -48,12 +55,16 @@ public class FurnitureController : Controller
                 reader.Close();
             }
         }
+        return View(furnitures);
+
 }
 catch(Exception ex)
 {
     Console.WriteLine(ex.Message);
+            return BadRequest("An error occurred while retrieving the furniture item.");
+
 }
-        return View(furnitures);
+        // return View(furnitures);
 
     }
 
@@ -65,6 +76,7 @@ catch(Exception ex)
     [HttpPost]
     public ActionResult Create(Furniture furniture)
     {
+        try{
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
             string query = "INSERT INTO Furniture (Product, Description, Material, Dimensions, Price) VALUES (@Product, @Description, @Material,@Dimensions, @Price)";
@@ -84,49 +96,71 @@ catch(Exception ex)
                 command.ExecuteNonQuery();
             }
         }
+        }
+        catch(Exception ex)
+{
+    Console.WriteLine(ex.Message);
+            return BadRequest("An error occurred while creating the furniture item.");
+
+}
 
         return RedirectToAction("Index");
     }
 
 
     public ActionResult Edit(int id)
+{
+    try
     {
-    Furniture furniture = new Furniture();
+        Furniture furniture = null;
 
-    using (SqlConnection connection = new SqlConnection(connectionString))
-    {
-        string query = "SELECT * FROM Furniture WHERE id = @id";
-
-        using (SqlCommand command = new SqlCommand(query, connection))
+        using (SqlConnection connection = new SqlConnection(connectionString))
         {
-            command.Parameters.AddWithValue("@id", id);
+            string query = "SELECT * FROM Furniture WHERE id = @id";
 
-            connection.Open();
-
-            SqlDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                furniture.id = Convert.ToInt32(reader["id"]);
-                furniture.Product = reader["Product"].ToString();
-                furniture.Description = reader["Description"].ToString();
-                furniture.Material = reader["Material"].ToString();
-                furniture.Dimensions = reader["Dimensions"].ToString();
-                // furniture.Price = reader["Price"].ToString();
-                furniture.Price = decimal.Parse(reader["Price"].ToString());
+                command.Parameters.AddWithValue("@id", id);
 
+                connection.Open();
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    furniture = new Furniture();
+                    furniture.id = Convert.ToInt32(reader["id"]);
+                    furniture.Product = reader["Product"].ToString();
+                    furniture.Description = reader["Description"].ToString();
+                    furniture.Material = reader["Material"].ToString();
+                    furniture.Dimensions = reader["Dimensions"].ToString();
+                    furniture.Price = decimal.Parse(reader["Price"].ToString());
+                }
+
+                reader.Close();
             }
-
-            reader.Close();
         }
-    }
 
-    return View(furniture);
+        if (furniture == null)
+        {
+            return NotFound();
+        }
+
+        return View(furniture);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+        // You can handle the exception as per your requirements (e.g., logging, displaying an error message)
+        return BadRequest("An error occurred while retrieving the furniture item.");
+    }
 }
+
 
     [HttpPost]
     public ActionResult Edit(Furniture furniture)
     {
+        try{
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
             string query = "UPDATE Furniture SET Product = @Product, Description = @Description, Material = @Material, Dimensions = @Dimensions, Price = @Price WHERE id = @id";
@@ -145,15 +179,30 @@ catch(Exception ex)
 
                 connection.Open();
 
-                command.ExecuteNonQuery();
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected == 0)
+                {
+                    // The provided ID does not exist in the Furniture table
+                    return NotFound();
+                }
             }
-        }
+        }}
+        catch(Exception ex)
+{
+    Console.WriteLine(ex.Message);
+}
 
         return RedirectToAction("Index");
     }
 
     public ActionResult Delete(int id)
     {
+        try{
+            if (id <= 0)
+        {
+            return BadRequest();
+        }
     using (SqlConnection connection = new SqlConnection(connectionString))
     {
         string query = "DELETE FROM Furniture WHERE id = @id";
@@ -163,10 +212,20 @@ catch(Exception ex)
             command.Parameters.AddWithValue("@id", id);
 
             connection.Open();
+            int rowsAffected = command.ExecuteNonQuery();
 
-            command.ExecuteNonQuery();
+                if (rowsAffected == 0)
+                {
+                    return NotFound();
+                }
         }
-    }
+    }}
+    catch(Exception ex)
+{
+    Console.WriteLine(ex.Message);
+    return BadRequest("An error occurred while deleting the furniture item.");
+
+}
 
     return RedirectToAction("Index");
     }

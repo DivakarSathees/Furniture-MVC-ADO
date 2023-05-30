@@ -1,34 +1,90 @@
-// using NUnit.Framework;
-// using Moq;
-// using Microsoft.AspNetCore.Mvc;
-// using dotnetapp.Models;
-// using System.Collections.Generic;
+using NUnit.Framework;
+using dotnetapp.Controllers;
+using dotnetapp.Models;
+using Microsoft.AspNetCore.Mvc;
 
-// namespace dotnetapp.Tests
-// {
-//     [TestFixture]
-//     public class FurnitureControllerTests
-//     {
-//         [Test]
-//         public void Index_ReturnsViewResult_WithListOfFurniture()
-//         {
-//             // Arrange
-//             var mockRepository = new Mock<IRepository<Furniture>>();
-//             var furnitureList = new List<Furniture>
-//             {
-//                 new Furniture { id = 1, Product = "Chair", Description = "Wooden chair", Material = "Wood", Dimensions = "40x40x80", Price = 100 },
-//                 new Furniture { id = 2, Product = "Table", Description = "Glass top table", Material = "Glass", Dimensions = "120x80x75", Price = 200 }
-//             };
-//             mockRepository.Setup(repo => repo.GetAll()).Returns(furnitureList);
-//             var controller = new FurnitureController(mockRepository.Object);
+namespace FurnitureControllerTests
+{
+    [TestFixture]
+    public class FurnitureControllerTests
+    {
+        private FurnitureController _controller;
 
-//             // Act
-//             var result = controller.Index() as ViewResult;
+        [SetUp]
+        public void Setup()
+        {
+            // Initialize the controller before each test
+            _controller = new FurnitureController();
+        }
 
-//             // Assert
-//             Assert.IsNotNull(result);
-//             Assert.IsInstanceOf<ViewResult>(result);
-//             Assert.AreEqual(furnitureList, result.Model);
-//         }
-//     }
-// }
+        [Test]
+        public void Index_ReturnsViewResultWithFurnitures()
+        {
+            // Arrange
+
+            // Act
+            var result = _controller.Index() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.IsAssignableFrom(typeof(List<Furniture>), result.Model);
+        }
+
+        [Test]
+        public void Create_ReturnsViewResult()
+        {
+            // Arrange
+
+            // Act
+            var result = _controller.Create() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<ViewResult>(result);
+        }
+        [Test]
+public void Edit_NonExistingId_ReturnsNotFoundResult()
+{
+    // Arrange
+    int nonExistingId = 100; // Assuming there is no furniture item with ID 100
+
+    // Act
+    var result = _controller.Edit(nonExistingId) as NotFoundResult;
+
+    // Assert
+    Assert.IsNotNull(result);
+    Assert.IsInstanceOf<NotFoundResult>(result);
+}
+     
+
+[Test]
+public void Delete_NonExistingId_ReturnsNotFoundResult()
+{
+    // Arrange
+    int nonExistingId = 100; // Assuming there is no furniture item with ID 100
+
+    // Act
+    var result = _controller.Delete(nonExistingId) as NotFoundResult;
+
+    // Assert
+    Assert.IsNotNull(result);
+    Assert.IsInstanceOf<NotFoundResult>(result);
+}
+
+[Test]
+public void Delete_InvalidId_ReturnsBadRequestResult()
+{
+    // Arrange
+    int invalidId = -1; // Assuming -1 is an invalid ID
+
+    // Act
+    var result = _controller.Delete(invalidId) as BadRequestResult;
+
+    // Assert
+    Assert.IsNotNull(result);
+    Assert.IsInstanceOf<BadRequestResult>(result);
+}
+
+    }
+}

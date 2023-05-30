@@ -16,8 +16,13 @@
     <PackageReference Include="nunit" Version="3.13.3" />
   </ItemGroup>
   <ItemGroup>
+      <!-- <Compile Include="Models\DbConnectionFactory.cs" /> -->
+
   <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
 </ItemGroup>
+<!-- <ItemGroup>
+    <ProjectReference Include="path/to/RepositoryProject.csproj" /> 
+</ItemGroup> -->
 
 
 </Project>
